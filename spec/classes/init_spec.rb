@@ -34,17 +34,9 @@ context 'setting sudoers::source to <for_spec_testing_only> to serve as fake sou
           'command'     => 'visudo -cf /etc/sudoers.d/._check_~ && cp -p /etc/sudoers.d/._check_~ /etc/sudoers.d/._check_~.ok',
           'path'        => '/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/sbin:/opt/quest/sbin:/app/sudo/1.8.6p8/bin:/app/sudo/1.8.6p8/sbin',
           'refreshonly' => 'true',
-          'notify'      => 'Exec[sudoers_cleanup_cmd]',
         })
       }
 
-      it {
-        should contain_exec('sudoers_cleanup_cmd').with({
-          'command'     => '/bin/rm -f /etc/sudoers.d/._check_~',
-          'path'        => '/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/sbin:/opt/quest/sbin:/app/sudo/1.8.6p8/bin:/app/sudo/1.8.6p8/sbin',
-          'refreshonly' => 'true',
-        })
-      }
     end
 
     context 'with sudoers::hiera_merge set to invalid value <invalid>' do

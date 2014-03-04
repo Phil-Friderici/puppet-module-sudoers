@@ -75,16 +75,10 @@ class sudoers(
     command     => "visudo -cf ${check_target} && cp -p ${check_target} ${check_target}.ok",
     path        => $path,
     refreshonly => true,
-    notify      => Exec[ 'sudoers_cleanup_cmd' ],
   }
 
   deploy_sudoers { $target :
     check_target => $check_target
   }
 
-  exec { 'sudoers_cleanup_cmd' :
-    command     => "/bin/rm -f ${check_target}",
-    path        => $path,
-    refreshonly => true,
-  }
 }
