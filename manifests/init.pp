@@ -9,6 +9,7 @@ class sudoers(
   $target_file  = '._check_~',
   $path         = '/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/sbin:/opt/quest/sbin:/app/sudo/1.8.6p8/bin:/app/sudo/1.8.6p8/sbin',
   $preamble     = '',
+  $epilogue     = '',
   $rule_source  = '/opt/eis_pua/bin/fetch2.pl',
   $owner        = 'root',
   $group        = 'root',
@@ -30,10 +31,14 @@ class sudoers(
 
   if $hiera_merge_real == true {
     $preamble_real = hiera_array('sudoers::preamble')
+    $epilogue_real = hiera_array('sudoers::epilogue')
     validate_array($preamble_real)
+    validate_array($epilogue_real)
   } else {
     $preamble_real = $preamble
+    $epilogue_real = $epilogue
     validate_string($preamble_real)
+    validate_string($epilogue_real)
     notice('Future versions of the sudoers module will default sudoers::hiera_merge to true')
   }
 
