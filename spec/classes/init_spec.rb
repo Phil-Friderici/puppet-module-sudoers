@@ -48,6 +48,44 @@ describe 'sudoers' do
     }
   end
 
+  context 'with preamble set to <Defaults requiretty>' do
+    let :params do
+      {
+        :rule_source => '/bin/echo',
+        :preamble => 'Defaults requiretty',
+      }
+    end
+
+    it { should contain_file('check_sudoers_file').with_content(/^Defaults requiretty$/) }
+
+  end
+
+  context 'with epilogue set to <Defaults:xymon !requiretty>' do
+    let :params do
+      {
+        :rule_source => '/bin/echo',
+        :epilogue => 'Defaults:xymon !requiretty',
+      }
+    end
+
+    it { should contain_file('check_sudoers_file').with_content(/^Defaults:xymon !requiretty$/) }
+
+  end
+
+  # test for preamble first, epilogue afterwards
+  context 'with preamble set to <Defaults requiretty> and epilogue set to <Defaults:xymon !requiretty>' do
+    let :params do
+      {
+        :rule_source => '/bin/echo',
+        :preamble  => 'Defaults requiretty',
+        :epilogue  => 'Defaults:xymon !requiretty',
+      }
+    end
+
+    it { should contain_file('check_sudoers_file').with_content(/^Defaults requiretty$\n.*\n*^Defaults:xymon \!requiretty$/) }
+
+  end
+
   context 'with sudoers::hiera_merge set to invalid value <invalid>' do
     let(:params) { { :hiera_merge => 'invalid' } }
 
