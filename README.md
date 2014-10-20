@@ -88,6 +88,27 @@ If $hiera_merge is set to true, epilogue will be merged through the levels of hi
 
 - *Default*: ''
 
+
+vas_plugin_enable
+-----------------
+vas_plugin_enable switches on the inclusion of the group_plugin to allow access
+AD-groups not mapped to Unix groups from sudo rules.
+This requires a version of sudo supporting group_plugin statements. This is verified with sudo >=1.8 and "csw"-sudo on Solaris.
+This requires the VAS/QAS software to be installed. "vas" module to manage this is recommended.
+
+- *Default*: false
+
+
+vas_plugin_path
+---------------
+The path to use for the libsudo_vas group_plugin. If the feature is used, and the parameter
+is not specified, the module will select known paths for supported plattforms.
+If you need to change the path due to a special setup or a plattform this module does not (yet)
+support, use this parameter to overrule the defaults.
+
+- *Default*: '', if unset, several known defaults (based on kernel/architecture) are used.
+
+
 fetcher
 -------
 *Only needed for PUA master server.* Name of the script to fetch the sudo rules.
