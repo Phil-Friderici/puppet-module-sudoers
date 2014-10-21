@@ -3,17 +3,17 @@
 # ===
 
 class sudoers(
-  $hiera_merge  = false,
-  $target       = '/etc/sudoers',
-  $target_dir   = '/etc/sudoers.d',
-  $target_file  = '._check_~',
-  $path         = '/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/sbin:/opt/quest/sbin:/app/sudo/1.8.6p8/bin:/app/sudo/1.8.6p8/sbin',
-  $preamble     = '',
-  $epilogue     = '',
-  $rule_source  = '/opt/eis_pua/bin/fetch2.pl',
-  $owner        = 'root',
-  $group        = 'root',
-  $mode         = '0440',
+  $hiera_merge       = false,
+  $target            = '/etc/sudoers',
+  $target_dir        = '/etc/sudoers.d',
+  $target_file       = '._check_~',
+  $path              = '/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/sbin:/opt/quest/sbin:/app/sudo/1.8.6p8/bin:/app/sudo/1.8.6p8/sbin',
+  $preamble          = '',
+  $epilogue          = '',
+  $rule_source       = '/opt/eis_pua/bin/fetch2.pl',
+  $owner             = 'root',
+  $group             = 'root',
+  $mode              = '0440',
   $vas_plugin_enable = false,
   $vas_plugin_path   = '',
 ) {
@@ -69,7 +69,7 @@ class sudoers(
               $vas_plugin_path_real = '/opt/quest/lib64/libsudo_vas.so'
             }
             default: {
-              fail("sudoers::vas_plugin_path - unknown default for architecture $::architecture on kernel $::kernel")
+              fail("sudoers::vas_plugin_path - unknown default for architecture ${::architecture} on kernel ${::kernel}")
             }
           }
         }
