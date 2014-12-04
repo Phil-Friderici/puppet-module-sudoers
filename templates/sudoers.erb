@@ -1,0 +1,11 @@
+#
+# THIS FILE IS MAINTAINED BY PUPPET
+# INTERNET IS FULL. GO AWAY!!
+#
+
+<% if @vas_plugin_enable_real -%>
+Defaults group_plugin="<%= @vas_plugin_path_real %>"
+<% end -%>
+<%= @preamble_real %>
+<%= @rules %>
+<%= @epilogue_real %>

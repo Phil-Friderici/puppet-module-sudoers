@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# This file is maintained by Puppet
+# Do not edit womanualy or manualy
+
+cd <%= @puatopdir %>
+. bin/activate
+<%= @puaheadercmd %>
+python manage.py <%= @puaextractcmd %> $@
