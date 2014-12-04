@@ -3,17 +3,19 @@
 # ===
 
 class sudoers(
-  $hiera_merge  = false,
-  $target       = '/etc/sudoers',
-  $target_dir   = '/etc/sudoers.d',
-  $target_file  = '._check_~',
-  $path         = '/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/sbin:/opt/quest/sbin:/app/sudo/1.8.6p8/bin:/app/sudo/1.8.6p8/sbin',
-  $preamble     = '',
-  $epilogue     = '',
-  $rule_source  = '/opt/eis_pua/bin/fetch2.pl',
-  $owner        = 'root',
-  $group        = 'root',
-  $mode         = '0440',
+  $hiera_merge       = false,
+  $target            = '/etc/sudoers',
+  $target_dir        = '/etc/sudoers.d',
+  $target_file       = '._check_~',
+  $path              = '/bin:/usr/bin:/sbin:/usr/sbin:/opt/csw/sbin:/opt/quest/sbin:/app/sudo/1.8.6p8/bin:/app/sudo/1.8.6p8/sbin',
+  $preamble          = '',
+  $epilogue          = '',
+  $rule_source       = '/opt/eis_pua/bin/fetch2.pl',
+  $owner             = 'root',
+  $group             = 'root',
+  $mode              = '0440',
+  $vas_plugin_enable = false,
+  $vas_plugin_path   = '',
 ) {
 
   case type($hiera_merge) {
@@ -41,6 +43,52 @@ class sudoers(
     validate_string($epilogue_real)
     notice('Future versions of the sudoers module will default sudoers::hiera_merge to true')
   }
+
+  case type($vas_plugin_enable) {
+    'string': {
+      validate_re($vas_plugin_enable, '^(true|false)$', "sudoers::vas_plugin_enable may be either 'true' or 'false' and is set to <${vas_plugin_enable}>.")
+      $vas_plugin_enable_real = str2bool($vas_plugin_enable)
+    }
+    'boolean': {
+      $vas_plugin_enable_real = $vas_plugin_enable
+    }
+    default: {
+      $vas_plugin_enable_real = false
+    }
+  }
+
+  if ($vas_plugin_enable_real == true) and (type($vas_plugin_path) == 'string') {
+    if $vas_plugin_path == '' {
+      case $::kernel {
+        'Linux': {
+          case $::architecture {
+            'i386': {
+              $vas_plugin_path_real = '/opt/quest/lib/libsudo_vas.so'
+            }
+            'x86_64', 'amd64': {
+              $vas_plugin_path_real = '/opt/quest/lib64/libsudo_vas.so'
+            }
+            default: {
+              fail("sudoers::vas_plugin_path - unknown default for architecture ${::architecture} on kernel ${::kernel}")
+            }
+          }
+        }
+        'SunOS': {
+          $vas_plugin_path_real = '/opt/quest/lib/libsudo_vas.so'
+        }
+        default: {
+          fail('sudoers::vas_plugin_path must be set, if running on unknown plattform!')
+        }
+      }
+    }
+    else {
+      $vas_plugin_path_real = $vas_plugin_path
+    }
+  }
+  else {
+    $vas_plugin_path_real = ''
+  }
+
 
   $check_target = "${target_dir}/${target_file}"
   $rules        = generate($rule_source, $::hostname, $::fqdn, $::ipaddress)
