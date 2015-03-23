@@ -18,17 +18,13 @@ class sudoers(
   $vas_plugin_path   = '',
 ) {
 
-  case type($hiera_merge) {
-    'string': {
-      validate_re($hiera_merge, '^(true|false)$', "sudoers::hiera_merge may be either 'true' or 'false' and is set to <${hiera_merge}>.")
-      $hiera_merge_real = str2bool($hiera_merge)
-    }
-    'boolean': {
-      $hiera_merge_real = $hiera_merge
-    }
-    default: {
-      fail('sudoers::hiera_merge type must be true or false.')
-    }
+  if is_string($hiera_merge) {
+    validate_re($hiera_merge, '^(true|false)$', "sudoers::hiera_merge may be either 'true' or 'false' and is set to <${hiera_merge}>.")
+    $hiera_merge_real = str2bool($hiera_merge)
+  } elsif is_bool($hiera_merge) {
+    $hiera_merge_real = $hiera_merge
+  } else {
+    fail('sudoers::hiera_merge type must be true or false.')
   }
 
   if $hiera_merge_real == true {
@@ -44,20 +40,16 @@ class sudoers(
     notice('Future versions of the sudoers module will default sudoers::hiera_merge to true')
   }
 
-  case type($vas_plugin_enable) {
-    'string': {
-      validate_re($vas_plugin_enable, '^(true|false)$', "sudoers::vas_plugin_enable may be either 'true' or 'false' and is set to <${vas_plugin_enable}>.")
-      $vas_plugin_enable_real = str2bool($vas_plugin_enable)
-    }
-    'boolean': {
-      $vas_plugin_enable_real = $vas_plugin_enable
-    }
-    default: {
-      $vas_plugin_enable_real = false
-    }
+  if is_string($vas_plugin_enable) {
+    validate_re($vas_plugin_enable, '^(true|false)$', "sudoers::vas_plugin_enable may be either 'true' or 'false' and is set to <${vas_plugin_enable}>.")
+    $vas_plugin_enable_real = str2bool($vas_plugin_enable)
+  } elsif is_bool($vas_plugin_enable) {
+    $vas_plugin_enable_real = $vas_plugin_enable
+  } else {
+    $vas_plugin_enable_real = false
   }
 
-  if ($vas_plugin_enable_real == true) and (type($vas_plugin_path) == 'string') {
+  if ($vas_plugin_enable_real == true) and is_string($vas_plugin_path) {
     if $vas_plugin_path == '' {
       case $::kernel {
         'Linux': {
