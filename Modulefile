@@ -1,5 +1,5 @@
 name         'puppet-module-sudoers'
-version      '1.2.1'
+version      '1.2.2'
 source       'ssh://gerrit.ericsson.se:29418/puppet/puppet-module-sudoers'
 author       'Ericsson'
 license      'Apache License, Version 2.0'
