@@ -4,6 +4,7 @@ class sudoers::puaserver(
   $owner         = 'root',
   $group         = 'root',
   $puatopdir     = '/srv/eis',
+  $puaactivate   = '. bin/activate',
   $puaheadercmd  = 'cat sudo/sudo.aliases',
   $puaextractcmd = 'sudoers3',
 ) {
