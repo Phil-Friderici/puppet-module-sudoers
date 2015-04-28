@@ -3,6 +3,7 @@
 # ===
 
 class sudoers(
+  $failhard          = false,
   $hiera_merge       = false,
   $target            = '/etc/sudoers',
   $target_dir        = '/etc/sudoers.d',
@@ -17,6 +18,12 @@ class sudoers(
   $vas_plugin_enable = false,
   $vas_plugin_path   = '',
 ) {
+
+  if is_bool($failhard) == true {
+    $failhard_real = $failhard
+  } else {
+    $failhard_real = str2bool($failhard)
+  }
 
   if is_string($hiera_merge) {
     validate_re($hiera_merge, '^(true|false)$', "sudoers::hiera_merge may be either 'true' or 'false' and is set to <${hiera_merge}>.")
@@ -84,6 +91,13 @@ class sudoers(
   $check_target = "${target_dir}/${target_file}"
   $rules        = generate($rule_source, $::hostname, $::fqdn, $::eis_ipaddress_main_interface)
   $content      = template('sudoers/sudoers.erb')
+
+  if $failhard_real == true {
+    # visudo seems to run in a chroot while validating. It fails for access denied when includedir is used.
+    # Simple remove includedir (functionality) as we can not validate local settings anyway.
+    $content_clean = regsubst($content, '#includedir', '#')
+    validate_cmd($content_clean, "PATH=${path}; visudo -c -f", 'visudo failed to validate sudoers content')
+  }
 
   file { $target_dir :
     ensure => directory,

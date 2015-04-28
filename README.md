@@ -27,6 +27,14 @@ puppetlabs/stdlib (http://forge.puppetlabs.com/puppetlabs/stdlib/3.2.0)
 
 # Parameters
 
+failhard (boolean)
+------------------
+Activate to fail hard (stop the Puppet run) when the generated sudoers file did not pass the visudo validation.
+Hint: #includedir directives in the generated sudoers file will be ignored as we cannot access fragments files.
+
+- *Default*: false
+
+
 hiera_merge
 -----------
 Boolean to merges all found instances of sudoers::preamble in Hiera. This is useful for specifying

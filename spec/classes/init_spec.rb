@@ -1,5 +1,10 @@
 require 'spec_helper'
 
+# in real life :rule_source point to a PUA server which delivers the sudoers rules
+# for testing we can use these fake generators:
+# /bin/true = output will be empty and pass visudo validation
+# /bin/echo = output will be ':hostname :fqdn :ipaddress' and will not pass visudo validation
+
 describe 'sudoers' do
   let :facts do
     {
@@ -9,12 +14,13 @@ describe 'sudoers' do
     }
   end
 
-  # use /bin/echo as fake generator for sudoers rules. Output will become :hostname :fqdn :ipaddress
-  let :params do
-    { :rule_source => '/bin/echo' }
-  end
-
   context 'with default options' do
+    let :params do
+      {
+        :rule_source => '/bin/true',
+      }
+    end
+
     it { should compile.with_all_deps }
     it { should contain_class('sudoers') }
 
@@ -35,9 +41,9 @@ describe 'sudoers' do
         'group'   => 'root',
         'mode'    => '0440',
         'notify'  => 'Exec[check_sudoers_cmd]',
+        'content' => "#\n# THIS FILE IS MAINTAINED BY PUPPET\n# INTERNET IS FULL. GO AWAY!!\n#\n\n\n\n\n",
       })
     }
-    it { should contain_file('check_sudoers_file').with_content(/^localhost localhost.localdomain 127.0.0.1$/) }
 
     it {
       should contain_exec('check_sudoers_cmd').with({
@@ -49,11 +55,39 @@ describe 'sudoers' do
     it { should_not contain_file('check_sudoers_file').with_content(/^Defaults group_plugin=/) }
   end
 
+  context 'with failhard set to <true> and a valid sudoers file' do
+    let :params do
+      {
+        :rule_source => '/bin/true',
+        :failhard    => true,
+      }
+    end
+
+    it { should compile.with_all_deps }
+    it { should contain_class('sudoers') }
+  end
+
+  context 'with failhard set to <true> and an invalid sudoers file' do
+    # use /bin/echo as fake generator for sudoers rules. Output will be ':hostname :fqdn :ipaddress' and will not pass validation.
+    let :params do
+      {
+        :rule_source => '/bin/echo',
+        :failhard    => true,
+      }
+    end
+
+    it 'should fail' do
+      expect {
+        should contain_class('sudoers')
+      }.to raise_error(Puppet::Error,/^visudo failed to validate sudoers content/)
+    end
+  end
+
   context 'with preamble set to <Defaults requiretty>' do
     let :params do
       {
         :rule_source => '/bin/echo',
-        :preamble => 'Defaults requiretty',
+        :preamble    => 'Defaults requiretty',
       }
     end
 
@@ -65,7 +99,7 @@ describe 'sudoers' do
     let :params do
       {
         :rule_source => '/bin/echo',
-        :epilogue => 'Defaults:xymon !requiretty',
+        :epilogue    => 'Defaults:xymon !requiretty',
       }
     end
 
@@ -78,8 +112,8 @@ describe 'sudoers' do
     let :params do
       {
         :rule_source => '/bin/echo',
-        :preamble  => 'Defaults requiretty',
-        :epilogue  => 'Defaults:xymon !requiretty',
+        :preamble    => 'Defaults requiretty',
+        :epilogue    => 'Defaults:xymon !requiretty',
       }
     end
 
@@ -93,8 +127,7 @@ describe 'sudoers' do
 
       let :params do
         {
-          # use /bin/echo as fake generator for sudoers rules. Output will become :hostname :fqdn :ipaddress
-          :rule_source       => '/bin/echo',
+          :rule_source       => '/bin/true',
           :vas_plugin_enable => "#{value}",
           :vas_plugin_path   => '/tmp/pseudolib_vas.so',
         }
@@ -171,8 +204,7 @@ describe 'sudoers' do
         end
         let :params do
           {
-            # use /bin/echo as fake generator for sudoers rules. Output will become :hostname :fqdn :ipaddress
-            :rule_source       => '/bin/echo',
+            :rule_source       => '/bin/true',
             :vas_plugin_enable => true,
           }
         end
@@ -197,8 +229,7 @@ describe 'sudoers' do
       context "on <#{v[:kernel]}> with <#{v[:architecture]}> architecture" do
         let :params do
           {
-            # use /bin/echo as fake generator for sudoers rules. Output will become :hostname :fqdn :ipaddress
-            :rule_source       => '/bin/echo',
+            :rule_source       => '/bin/true',
             :vas_plugin_enable => true,
             :vas_plugin_path   => '/tmp/pseudolib_vas.so',
           }
