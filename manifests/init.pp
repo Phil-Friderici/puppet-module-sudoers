@@ -81,9 +81,8 @@ class sudoers(
     $vas_plugin_path_real = ''
   }
 
-
   $check_target = "${target_dir}/${target_file}"
-  $rules        = generate($rule_source, $::hostname, $::fqdn, $::ipaddress)
+  $rules        = generate($rule_source, $::hostname, $::fqdn, $::eis_ipaddress_main_interface)
   $content      = template('sudoers/sudoers.erb')
 
   file { $target_dir :
