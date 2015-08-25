@@ -8,3 +8,4 @@ description  'Manages sudoers file(s) from PUA data'
 project_page 'https://gerrit.ericsson.se/#/admin/projects/puppet/puppet-module-sudoers'
 
 dependency 'puppetlabs/stdlib', '>= 3.2.0 < 5.0.0'
+dependency 'juliengk/stdlibplus', '>= 0.1.0'

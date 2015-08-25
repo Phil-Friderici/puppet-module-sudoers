@@ -89,7 +89,7 @@ class sudoers(
   }
 
   $check_target = "${target_dir}/${target_file}"
-  $rules        = generate($rule_source, $::hostname, $::fqdn, $::eis_ipaddress_main_interface)
+  $rules        = generate($rule_source, $::hostname, $::fqdn, $::ipaddress_main_interface)
   $content      = template('sudoers/sudoers.erb')
 
   if $failhard_real == true {

@@ -22,6 +22,7 @@ This module is built for use with Puppet v2 and Puppet v3 and is tested on the f
 # Dependencies
 
 puppetlabs/stdlib (http://forge.puppetlabs.com/puppetlabs/stdlib/4.2.0)
+juliengk/stdlibplus (https://github.com/juliengk/stdlibplus/tree/v0.1.0)
 
 ===
 
