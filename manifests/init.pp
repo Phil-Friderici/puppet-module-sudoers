@@ -103,7 +103,7 @@ class sudoers(
     ensure => directory,
     owner  => $owner,
     group  => $group,
-    notify => File [ 'check_sudoers_file' ],
+    notify => File[ 'check_sudoers_file' ],
   }
 
   file { 'check_sudoers_file' :
@@ -122,7 +122,7 @@ class sudoers(
     refreshonly => true,
   }
 
-  deploy_sudoers { $target :
+  sudoers::deploy_sudoers { $target :
     check_target => $check_target,
     mode         => $mode,
   }
