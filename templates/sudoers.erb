@@ -6,6 +6,10 @@
 <% if @vas_plugin_enable_real -%>
 Defaults group_plugin="<%= @vas_plugin_path_real %>"
 <% end -%>
-<%= @preamble_real %>
+<% @preamble_real.each do |preamble| -%>
+<%= preamble %>
+<% end -%>
 <%= @rules %>
-<%= @epilogue_real %>
+<% @epilogue_real.each do |epilogue| -%>
+<%= epilogue %>
+<% end -%>
