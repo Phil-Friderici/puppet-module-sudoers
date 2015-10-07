@@ -1,0 +1,3 @@
+---
+sudoers::preamble: '#preamble_from_group'
+sudoers::epilogue: '#epilogue_from_group'

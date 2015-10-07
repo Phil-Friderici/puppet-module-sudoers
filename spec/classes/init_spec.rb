@@ -241,13 +241,46 @@ describe 'sudoers' do
     end
   end
 
-  context 'with sudoers::hiera_merge set to invalid value <invalid>' do
-    let(:params) { { :hiera_merge => 'invalid' } }
+  describe 'with sudoers::hiera_merge' do
+    let :facts do
+      {
+        :fqdn  => 'hieramerge.example.local',
+        :group => 'spectest',
+      }
+    end
 
-    it 'should fail' do
-      expect {
-        should contain_class('sudoers')
-      }.to raise_error(Puppet::Error,/sudoers::hiera_merge may be either 'true' or 'false' and is set to <invalid>./)
+    context 'set to valid value true' do
+      let :params do
+        {
+          :group       => 'spectest',
+          :hiera_merge => 'true',
+          :rule_source => '/bin/true',
+        }
+      end
+
+      it { should contain_file('check_sudoers_file').with_content(/^#preamble_from_fqdn\n#preamble_from_group\n\n#epilogue_from_fqdn\n#epilogue_from_group$/) }
+    end
+
+    context 'set to valid value false' do
+      let :params do
+        {
+          :group       => 'spectest',
+          :hiera_merge => 'false',
+          :rule_source => '/bin/true',
+        }
+      end
+
+      it { should contain_file('check_sudoers_file').with_content(/^#preamble_from_fqdn\n\n#epilogue_from_fqdn$/) }
+    end
+
+    context 'set to invalid value <invalid>' do
+      let(:params) { { :hiera_merge => 'invalid' } }
+
+      it 'should fail' do
+        expect {
+          should contain_class('sudoers')
+        }.to raise_error(Puppet::Error,/sudoers::hiera_merge may be either 'true' or 'false' and is set to <invalid>./)
+      end
     end
 
   end

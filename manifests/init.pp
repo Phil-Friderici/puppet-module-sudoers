@@ -40,10 +40,10 @@ class sudoers(
     validate_array($preamble_real)
     validate_array($epilogue_real)
   } else {
-    $preamble_real = $preamble
-    $epilogue_real = $epilogue
-    validate_string($preamble_real)
-    validate_string($epilogue_real)
+    $preamble_real = any2array($preamble)
+    $epilogue_real = any2array($epilogue)
+    validate_array($preamble_real)
+    validate_array($epilogue_real)
     notice('Future versions of the sudoers module will default sudoers::hiera_merge to true')
   }
 
