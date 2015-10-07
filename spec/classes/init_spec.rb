@@ -79,7 +79,7 @@ describe 'sudoers' do
     it 'should fail' do
       expect {
         should contain_class('sudoers')
-      }.to raise_error(Puppet::Error,/^visudo failed to validate sudoers content/)
+      }.to raise_error(Puppet::Error,/visudo failed to validate sudoers content/)
     end
   end
 
@@ -141,7 +141,7 @@ describe 'sudoers' do
         it 'should fail' do
           expect {
             should contain_class('sudoers')
-          }.to raise_error(Puppet::Error,/^sudoers::vas_plugin_enable may be either 'true' or 'false' and is set to <invalid>./)
+          }.to raise_error(Puppet::Error,/sudoers::vas_plugin_enable may be either 'true' or 'false' and is set to <invalid>\./)
         end
       end
     end
@@ -215,7 +215,7 @@ describe 'sudoers' do
           it 'should fail' do
             expect {
               should contain_class('sudoers')
-            }.to raise_error(Puppet::Error,/^#{v[:error_message]}/)
+            }.to raise_error(Puppet::Error,/#{v[:error_message]}/)
           end
         end
 

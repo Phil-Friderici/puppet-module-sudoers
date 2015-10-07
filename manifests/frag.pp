@@ -10,14 +10,14 @@ define sudoers::frag (
 
   file {  $frag :
     source => $path,
-    notify => Exec ["check_sudoers_${frag}"],
+    notify => Exec["check_sudoers_${frag}"],
   }
 
   exec { "check_sudoers_${frag}" :
     command     => "visudo -cf ${frag}",
     path        => $frag,
     refreshonly => true,
-    notify      => Exec ['create_sudoers'],
+    notify      => Exec['create_sudoers'],
   }
 
 }
